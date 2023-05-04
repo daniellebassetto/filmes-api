@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using FilmesApi.Data.DTOs;
 using FilmesApi.Data;
 using FilmesApi.Models;
 using Microsoft.AspNetCore.Mvc;
-using FilmesApi.Data.DTOs;
 
 namespace FilmesApi.Controllers
 {
@@ -20,9 +20,9 @@ namespace FilmesApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AdicionaEndereco([FromBody] CreateEnderecoDTO enderecoDto)
+        public IActionResult AdicionaEndereco([FromBody] CreateEnderecoDTO enderecoDTO)
         {
-            Endereco endereco = _mapper.Map<Endereco>(enderecoDto);
+            Endereco endereco = _mapper.Map<Endereco>(enderecoDTO);
             _context.Enderecos.Add(endereco);
             _context.SaveChanges();
             return CreatedAtAction(nameof(RecuperaEnderecosPorId), new { Id = endereco.Id }, endereco);
@@ -40,22 +40,22 @@ namespace FilmesApi.Controllers
             Endereco endereco = _context.Enderecos.FirstOrDefault(endereco => endereco.Id == id);
             if (endereco != null)
             {
-                ReadEnderecoDTO enderecoDto = _mapper.Map<ReadEnderecoDTO>(endereco);
+                ReadEnderecoDTO enderecoDTO = _mapper.Map<ReadEnderecoDTO>(endereco);
 
-                return Ok(enderecoDto);
+                return Ok(enderecoDTO);
             }
             return NotFound();
         }
 
         [HttpPut("{id}")]
-        public IActionResult AtualizaEndereco(int id, [FromBody] UpdateEnderecoDTO enderecoDto)
+        public IActionResult AtualizaEndereco(int id, [FromBody] UpdateEnderecoDTO enderecoDTO)
         {
             Endereco endereco = _context.Enderecos.FirstOrDefault(endereco => endereco.Id == id);
             if (endereco == null)
             {
                 return NotFound();
             }
-            _mapper.Map(enderecoDto, endereco);
+            _mapper.Map(enderecoDTO, endereco);
             _context.SaveChanges();
             return NoContent();
         }

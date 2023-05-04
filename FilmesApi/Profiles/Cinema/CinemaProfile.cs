@@ -9,10 +9,9 @@ namespace FilmesApi.Profiles
         public CinemaProfile()
         {
             CreateMap<CreateCinemaDTO, Cinema>().ReverseMap();
-            // Para meu campo de ReadEnderecoDTO quero pegar da minha origem o campo de endereço
             CreateMap<Cinema, ReadCinemaDTO>()
-               .ForMember(cinemaDto => cinemaDto.Endereco,
-                   opt => opt.MapFrom(cinema => cinema.Endereco)).ReverseMap();
+                .ForMember(cinemaDTO => cinemaDTO.Endereco,
+                    opt => opt.MapFrom(cinema => cinema.Endereco)).ReverseMap();
             CreateMap<UpdateCinemaDTO, Cinema>().ReverseMap();
         }
     }

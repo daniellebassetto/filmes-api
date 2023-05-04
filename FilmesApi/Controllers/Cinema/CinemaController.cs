@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using FilmesApi.Data;
 using FilmesApi.Data.DTOs;
+using FilmesApi.Data;
 using FilmesApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +8,6 @@ namespace FilmesApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-
     public class CinemaController : ControllerBase
     {
         private FilmeContext _context;
@@ -20,13 +19,14 @@ namespace FilmesApi.Controllers
             _mapper = mapper;
         }
 
+
         [HttpPost]
-        public IActionResult AdicionaCinema([FromBody] CreateCinemaDTO cinemaDto)
+        public IActionResult AdicionaCinema([FromBody] CreateCinemaDTO cinemaDTO)
         {
-            Cinema cinema = _mapper.Map<Cinema>(cinemaDto);
+            Cinema cinema = _mapper.Map<Cinema>(cinemaDTO);
             _context.Cinemas.Add(cinema);
             _context.SaveChanges();
-            return CreatedAtAction(nameof(RecuperaCinemasPorId), new { Id = cinema.Id }, cinemaDto);
+            return CreatedAtAction(nameof(RecuperaCinemasPorId), new { Id = cinema.Id }, cinemaDTO);
         }
 
         [HttpGet]
@@ -41,21 +41,21 @@ namespace FilmesApi.Controllers
             Cinema cinema = _context.Cinemas.FirstOrDefault(cinema => cinema.Id == id);
             if (cinema != null)
             {
-                ReadCinemaDTO cinemaDto = _mapper.Map<ReadCinemaDTO>(cinema);
-                return Ok(cinemaDto);
+                ReadCinemaDTO cinemaDTO = _mapper.Map<ReadCinemaDTO>(cinema);
+                return Ok(cinemaDTO);
             }
             return NotFound();
         }
 
         [HttpPut("{id}")]
-        public IActionResult AtualizaCinema(int id, [FromBody] UpdateCinemaDTO cinemaDto)
+        public IActionResult AtualizaCinema(int id, [FromBody] UpdateCinemaDTO cinemaDTO)
         {
             Cinema cinema = _context.Cinemas.FirstOrDefault(cinema => cinema.Id == id);
             if (cinema == null)
             {
                 return NotFound();
             }
-            _mapper.Map(cinemaDto, cinema);
+            _mapper.Map(cinemaDTO, cinema);
             _context.SaveChanges();
             return NoContent();
         }
