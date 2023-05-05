@@ -1,0 +1,16 @@
+﻿Para criar migrations via console, basta fazer as interações corretas
+entre as classes (Data, Model, Profiles, Controllers) com as propriedades virtual e etc.
+
+Depois disso, ir em (No Visual Studio):
+Ferramentas > Gerenciador de Pacotes do Nuget > Console do Gerenciador de Pacotes
+
+Após isso, no console insira:
+
+Add-Migration "nome da(s) classe(s)"
+
+Isso criará os migrations.
+
+Update-database irá atualizar seu banco criando as colunas e tabelas necessárias
+(lembrando que para isso a conexão no appsettings deve estar correta)
+
+Removendo migration: Remove-Migration

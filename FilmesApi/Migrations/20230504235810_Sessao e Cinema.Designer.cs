@@ -3,6 +3,7 @@ using System;
 using FilmesApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FilmesApi.Migrations
 {
     [DbContext(typeof(FilmeContext))]
-    partial class FilmeContextModelSnapshot : ModelSnapshot
+    [Migration("20230504235810_Sessao e Cinema")]
+    partial class SessaoeCinema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,15 +89,21 @@ namespace FilmesApi.Migrations
 
             modelBuilder.Entity("FilmesApi.Models.Sessao", b =>
                 {
-                    b.Property<int?>("FilmeId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int?>("CinemaId")
                         .HasColumnType("int");
 
-                    b.HasKey("FilmeId", "CinemaId");
+                    b.Property<int>("FilmeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CinemaId");
+
+                    b.HasIndex("FilmeId");
 
                     b.ToTable("Sessoes");
                 });
@@ -114,9 +123,7 @@ namespace FilmesApi.Migrations
                 {
                     b.HasOne("FilmesApi.Models.Cinema", "Cinema")
                         .WithMany("Sessoes")
-                        .HasForeignKey("CinemaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CinemaId");
 
                     b.HasOne("FilmesApi.Models.Filme", "Filme")
                         .WithMany("Sessoes")

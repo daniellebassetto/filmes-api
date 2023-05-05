@@ -11,5 +11,8 @@ public class FilmeProfile : Profile
         CreateMap<CreateFilmeDTO, Filme>().ReverseMap();
         CreateMap<UpdateFilmeDTO, Filme>().ReverseMap();
         CreateMap<Filme, ReadFilmeDTO>().ReverseMap();
+        CreateMap<Filme, ReadFilmeDTO>()
+           .ForMember(filmeDto => filmeDto.Sessoes,
+                   opt => opt.MapFrom(filme => filme.Sessoes)).ReverseMap();
     }
 }

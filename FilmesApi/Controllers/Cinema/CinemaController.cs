@@ -19,7 +19,6 @@ namespace FilmesApi.Controllers
             _mapper = mapper;
         }
 
-
         [HttpPost]
         public IActionResult AdicionaCinema([FromBody] CreateCinemaDTO cinemaDTO)
         {
