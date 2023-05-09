@@ -21,9 +21,9 @@ public class FilmeController : ControllerBase
     }
 
     /// <summary>
-    /// Adiciona um filme ao banco de dados
+    /// Adiciona um filme ao banco de dados.
     /// </summary>
-    /// <param name="filmeDTO">Objeto com os campos necessários para criação de um filme</param>
+    /// <param name="filmeDTO">Parâmetro obrigatório do objeto completo informando os campos necessários para criação de um filme</param>
     /// <returns>IActionResult</returns>
     /// <response code="201">Caso inserção seja feita com sucesso</response>
     [HttpPost]
@@ -36,12 +36,26 @@ public class FilmeController : ControllerBase
         return CreatedAtAction(nameof(RecuperaFilmePorId), new { id = filme.Id }, filme);
     }
 
+    /// <summary>
+    /// Consulta os filmes cadastrados.
+    /// </summary>
+    /// <param name="skip">Parâmetro opcional inteiro informando a posição inicial para filtragem</param>
+    /// <param name="take">Parâmetro opcional inteiro informando quantos filmes irá filtrar a partir do skip para filtragem</param>
+    /// <param name="nomeCinema">Parâmetro opcional informando o nome do cinema para que apenas filmes deste cinema sejam consultados</param>
+    /// <returns>IEnumerable de ReadFilmeDTO</returns>
     [HttpGet]
-    public IEnumerable<ReadFilmeDTO> RecuperaFilmes([FromQuery] int skip = 0, [FromQuery] int take = 50)
+    public IEnumerable<ReadFilmeDTO> RecuperaFilmes([FromQuery] int skip = 0, [FromQuery] int take = 50, [FromQuery] string? nomeCinema = null)
     {
-        return _mapper.Map<List<ReadFilmeDTO>>(_context.Filmes.Skip(skip).Take(take).ToList());
+        if(nomeCinema == null)
+            return _mapper.Map<List<ReadFilmeDTO>>(_context.Filmes.Skip(skip).Take(take).ToList());
+        return _mapper.Map<List<ReadFilmeDTO>>(_context.Filmes.Skip(skip).Take(take).Where(filme => filme.Sessoes.Any(sessao => sessao.Cinema.Nome == nomeCinema)).ToList());
     }
 
+    /// <summary>
+    /// Consulta um filme pelo Id informado.
+    /// </summary>
+    /// <param name="id">Parâmetro obrigatório inteiro informando o id do filme a ser consultado</param>
+    /// <returns>IActionResult</returns>
     [HttpGet("{id}")]
     public IActionResult RecuperaFilmePorId(int id)
     {
@@ -52,18 +66,30 @@ public class FilmeController : ControllerBase
         return Ok(filme);
     }
 
+    /// <summary>
+    /// Atualiza um filme de acordo com id informado.
+    /// </summary>
+    /// <param name="id">Parâmetro obrigatório inteiro informando o id do filme a ser atualizado</param>
+    /// <param name="filmeDTO">Parâmetro obrigatório informando o objeto completo para atualização de um filme</param>
+    /// <returns>IActionResult</returns>
     [HttpPut("{id}")]
-    public IActionResult AtualizaFilme(int id,
-     [FromBody] UpdateFilmeDTO filmeDto)
+    public IActionResult AtualizaFilme(int id, [FromBody] UpdateFilmeDTO filmeDTO)
     {
         var filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
         if (filme == null)
             return NotFound();
-        _mapper.Map(filmeDto, filme);
+        _mapper.Map(filmeDTO, filme);
         _context.SaveChanges();
         return NoContent();
     }
 
+    /// <summary>
+    /// Atualiza parcialmente um filme pelo Id informado e pelo seu patch de atualização, 
+    /// ou seja, não é necessário informar o objeto completo.
+    /// </summary>
+    /// <param name="id">Parâmetro obrigatório inteiro informando o id do filme a ser atualizado</param>
+    /// <param name="patch">Parâmetro obrigatório do tipo JsonPatchDocument de UpdateFilmeDTO informando o patch de campos atualizados</param>
+    /// <returns>IActionResult</returns>
     [HttpPatch("{id}")]
     public IActionResult AtualizaFilmeParcial(int id, JsonPatchDocument<UpdateFilmeDTO> patch)
     {
@@ -83,6 +109,11 @@ public class FilmeController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deleta um filme.
+    /// </summary>
+    /// <param name="id">Parâmetro obrigatório inteiro informando o id do filme a ser deletado</param>
+    /// <returns>IActionResult</returns>
     [HttpDelete("{id}")]
     public IActionResult DeletaFilme(int id)
     {
